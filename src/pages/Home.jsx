@@ -151,17 +151,26 @@ const options = {
   },
   body: JSON.stringify({ formData })
 };
-
 try {
-  const response = await fetch(url, options);
-  const data = await response.json();
-  console.log("Generated Gemini Data:",data);
-  console.log("Generated Gemini Data:",data.candidates[0].content.parts[0].text);
-  setGeminiResponse(data.candidates[0].content.parts[0].text);
-} catch (error) {
-  console.error(error);
+    const response = await fetch(`https://airesumebuilder-production-7fff.up.railway.app/generate`, t);
+    
+    // Check if the HTTP status is in the 200-299 range
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const e = await response.json();
+    console.log(`Generated Gemini Data:`, e);
+    
+    const text = e.candidates[0]?.content?.parts[0]?.text;
+    if (text) {
+        r(text);
+    }
+} catch (e) {
+    console.error("Fetch failed or parsing error:", e);
 }
-  }
+
+
 //AIzaSyDLJtoP_J0KMdrRnYbiuPiBcsvHjMLXrKo
     return (
     <>

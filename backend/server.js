@@ -3,9 +3,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 const app=express();
-app.use(cors({
-    origin:"*"
-}));
+//app.use(cors({
+   // origin:"*"
+//}));
+// const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Allow requests from your frontend domain (e.g., localhost or your production URL)
+app.use(cors({ origin: 'http://localhost:5173' })); 
 
 
 app.use((req, res, next) => {
@@ -23,34 +29,29 @@ Experience Level: ${formData.applyingasa}  (Fresher / Experienced)
 Job Description: ${formData.jobDescription}
 Current Resume: ${formData.currentResume} 
       `;
-    try{
-        const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-goog-api-key":process.env.GEMINI_API_KEY
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: prompt
-                  }
-                ]
-              }
-            ]
-          })
-        });
-        const data = await response.json();
-        res.json(data);
-    }
-    catch {
-        res.status(500).json({error:"Error generating content"});
-    }
+            try {
+            let response = await fetch(`https://airesumebuilder-production-7fff.up.railway.app/generate`, t);
+            
+            // Check if the response is successful (status 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
 
+            let e = await response.json();
+            console.log(`Generated Gemini Data:`, e);
+            
+            // Use optional chaining to prevent crashing if the path doesn't exist
+            const text = e?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) {
+                console.log(`Text:`, text);
+                r(text);
+            }
+        } catch (e) {
+            // This will now catch both network 'Failed to fetch' and manual HTTP errors
+            console.error("Fetch request failed:", e);
+        }
 });
-const PORT=process.env.PORT || 8080;
-app.listen(PORT, "0.0.0.0",()=>{
+const PORT=process.env.PORT ||8080;
+app.listen(PORT, ()=>{
     console.log(`Server is running on ${PORT}`);
 });
