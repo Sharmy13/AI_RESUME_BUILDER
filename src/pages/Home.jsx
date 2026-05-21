@@ -142,7 +142,7 @@ Explain the reasoning briefly (e.g., missing keywords, formatting issues, irrele
 
 
 Ensure the response is structured, clear, and easy to display in a React app.`; 
-    const url = "https://airesumebuilder-production-bdf0.up.railway.app";
+    const url = "https://airesumebuilder-production-35a5.up.railway.app/generate";
 const options = {
   method: "POST",
   headers: {
