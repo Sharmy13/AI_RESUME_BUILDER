@@ -10,7 +10,7 @@ const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const distPath = path.resolve(__dirname, "../dist");
+
 
 app.use(cors());
 app.use(express.json());
@@ -24,7 +24,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(distPath));
+
 
 app.post("/generate", async (req, res) => {
   try {
@@ -91,7 +91,7 @@ Generate a professional cover letter and resume suggestions.
 });
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+  res.send("Backend Running");
 });
 
 const PORT = process.env.PORT || 8080;
