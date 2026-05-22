@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-dotenv.config();
+require('dotenv').config();
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,7 +38,7 @@ Current Resume: ${formData.currentResume}
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${process.env.GEMINI_API_KEY}`,
+              
             },
             body: JSON.stringify({
               prompt: {
