@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
+dotenv.config();
 
 const app = express();
 
@@ -22,55 +23,59 @@ app.use((req, res, next) => {
 
 app.use(express.static(distPath));
 
-app.post("/generate",async(req,res)=>{
-    const {formData}=req.body;
-    const prompt=`
-    you are a professional career caoch and optimizationnexpert
+app.post("/generate", async (req, res) => {
+  const { formData } = req.body;
+
+  if (!formData) {
+    return res.status(400).json({ error: "Missing formData" });
+  }
+
+  const prompt = `
+    You are a professional career coach and optimization expert.
     Company Name: ${formData.companyname}
-Experience Level: ${formData.applyingasa}  (Fresher / Experienced)
-Job Description: ${formData.jobDescription}
-Current Resume: ${formData.currentResume} 
-      `;
-    try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              
+    Experience Level: ${formData.applyingasa}  (Fresher / Experienced)
+    Job Description: ${formData.jobDescription}
+    Current Resume: ${formData.currentResume}
+  `;
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: prompt,
+                },
+              ],
             },
-            body: JSON.stringify({
-  contents: [
-    {
-      parts: [
-        {
-          text: prompt
-        }
-      ]
-    }
-  ]
-}),}
-        );
-         
+          ],
+        }),
+      }
+    );
 
-        if (!response.ok) {
-          const errorBody = await response.text();
-          console.error("Google API error response:", response.status, errorBody);
-          return res.status(response.status).json({
-            error: "Google API request failed",
-            status: response.status,
-            details: errorBody,
-          });
-        }
-
-        const data = await response.json();
-        res.json(data);
-    } catch (err) {
-        console.error('Error generating content:', err);
-        res.status(500).json({ error: "Error generating content", details: err?.message });
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("Google API error response:", response.status, errorBody);
+      return res.status(response.status).json({
+        error: "Google API request failed",
+        status: response.status,
+        details: errorBody,
+      });
     }
 
+    const data = await response.json();
+    return res.json(data);
+  } catch (err) {
+    console.error("Error generating content:", err);
+    return res.status(500).json({ error: "Error generating content", details: err?.message });
+  }
 });
 
 app.get("/", (req, res) => {
@@ -79,7 +84,6 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
-
+  console.log(`Server is running on ${PORT}`);
 });
 
