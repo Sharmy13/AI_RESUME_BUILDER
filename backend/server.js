@@ -17,28 +17,36 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
   next();
 });
 
 app.use(express.static(distPath));
 
 app.post("/generate", async (req, res) => {
-  const { formData } = req.body;
-
-  if (!formData) {
-    return res.status(400).json({ error: "Missing formData" });
-  }
-
-  const prompt = `
-    You are a professional career coach and optimization expert.
-    Company Name: ${formData.companyname}
-    Experience Level: ${formData.applyingasa}  (Fresher / Experienced)
-    Job Description: ${formData.jobDescription}
-    Current Resume: ${formData.currentResume}
-  `;
-
   try {
+    const { formData } = req.body;
+
+    if (!formData) {
+      return res.status(400).json({
+        error: "Missing formData",
+      });
+    }
+
+    const prompt = `
+You are a professional career coach and resume optimization expert.
+
+Company Name: ${formData.companyname}
+Experience Level: ${formData.applyingasa}
+Job Description: ${formData.jobDescription}
+Current Resume: ${formData.currentResume}
+
+Generate a professional cover letter and resume suggestions.
+`;
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -60,21 +68,25 @@ app.post("/generate", async (req, res) => {
       }
     );
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const errorBody = await response.text();
-      console.error("Google API error response:", response.status, errorBody);
+      console.error("Google API Error:", data);
+
       return res.status(response.status).json({
         error: "Google API request failed",
-        status: response.status,
-        details: errorBody,
+        details: data,
       });
     }
 
-    const data = await response.json();
     return res.json(data);
   } catch (err) {
-    console.error("Error generating content:", err);
-    return res.status(500).json({ error: "Error generating content", details: err?.message });
+    console.error("Server Error:", err);
+
+    return res.status(500).json({
+      error: "Internal Server Error",
+      details: err.message,
+    });
   }
 });
 
@@ -83,7 +95,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
-});
 
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
