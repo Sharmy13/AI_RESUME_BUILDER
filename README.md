@@ -28,7 +28,8 @@ This project is split into a React frontend and an Express backend.
 
 ### Frontend deployment
 
-1. Set `VITE_API_URL` in your frontend host to the backend URL, e.g. `https://your-backend.example.com/generate`.
+1. Set `VITE_API_URL` in your frontend host to the backend base URL, e.g. `https://your-backend.example.com`.
+   - If you use a URL that already includes `/generate`, the app will still work.
 2. Build the frontend with:
    ```bash
    npm run build
@@ -65,7 +66,8 @@ This repository includes a `render.yaml` file for deploying both backend and fro
    - `resume-builder-frontend` (static site from the root with `dist` publish directory)
 4. Set environment variables on Render:
    - `GEMINI_API_KEY` for `resume-builder-backend`
-   - `VITE_API_URL` for `resume-builder-frontend`, e.g. `https://your-backend.onrender.com/generate`
+   - `VITE_API_URL` for `resume-builder-frontend`, e.g. `https://your-backend.onrender.com`
+     - A URL that already contains `/generate` is also accepted.
 
 ### Docker deployment
 
