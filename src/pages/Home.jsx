@@ -112,7 +112,7 @@ function HomePage() {
 
     const prompt = `You are a professional career coach and resume optimization expert.\n\nCompany Name: ${formData.companyname}\nExperience Level: ${formData.applyingasa}\nJob Description: ${formData.jobDescription}\nCurrent Resume: ${formData.currentResume}\nPreferred Tone: ${formData.coverLetterTone}\n`;
 
-    const apiUrl = import.meta.env.VITE_API_URL || "https://ai-resume-builder-2-em0p.onrender.com";
+    const apiUrl ="https://ai-resume-builder-2-em0p.onrender.com";
     const endpoint = apiUrl.endsWith("/generate")
       ? apiUrl
       : `${apiUrl.replace(/\/+$/, "")}/generate`;
