@@ -12,7 +12,7 @@ function HomePage() {
 
   const [geminiResponse, setGeminiResponse] = useState("");
 
-  const formatInlineText = (text) => {
+  const formatInlineText = (text) 
     return text.split(/(\*\*[^*]+\*\*)/g).map((part, idx) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return <strong key={idx}>{part.slice(2, -2)}</strong>;
