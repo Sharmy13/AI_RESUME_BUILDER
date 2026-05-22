@@ -1,3 +1,32 @@
+
+
+# AI Resume Builder 🚀
+
+An AI-powered Resume Builder and Cover Letter Generator built using React, Node.js, Express and Gemini API.
+
+## ✨ Features
+- AI Resume Optimization
+- AI Cover Letter Generation
+- Gemini API Integration
+- Responsive UI
+- Full Stack Deployment
+
+## 🛠 Tech Stack
+- React
+- Node.js
+- Express.js
+- Gemini API
+- Render
+- Vercel
+
+## 🌐 Live Demo
+https://your-vercel-link.vercel.app
+
+## 📂 GitHub Repository
+https://github.com/yourusername/AI_RESUME_BUILDER
+
+## 👩‍💻 Author
+Sharmila
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -67,21 +96,4 @@ This repository includes a `render.yaml` file for deploying both backend and fro
 4. Set environment variables on Render:
    - `GEMINI_API_KEY` for `resume-builder-backend`
    - `VITE_API_URL` for `resume-builder-frontend`, e.g. `https://your-backend.onrender.com`
-     - A URL that already contains `/generate` is also accepted.
-
-### Docker deployment
-
-If you want to deploy as a single container, build the image from the project root:
-
-```bash
-cd DEMO
-docker build -t resume-builder .
-```
-
-Then run it locally with:
-
-```bash
-docker run -p 8080:8080 --env GEMINI_API_KEY=your_key_here resume-builder
-```
-
-The app will be available at `http://localhost:8080`.
+     - A URL that already contains `/generate` is also accept
