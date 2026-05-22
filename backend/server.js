@@ -64,6 +64,8 @@ Generate a professional cover letter and resume suggestions.
     );
 
     const data = await response.json();
+    console.log("Google API Response:", data);
+    res.json(data);
 
     if (!response.ok) {
       console.error("Google API Error:", data);
