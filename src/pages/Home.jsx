@@ -1,16 +1,16 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
-import { useState } from "react";
-function HomePage(){
-  const [formData,setFormData]=useState({
-    companyname:"",
-    applyingasa:"Fresher",
-    coverLetterTone:"Formal",
-    jobDescription:"",
-    currentResume:"",
+import React, { useState } from "react";
 
-  })
-  const[geminiResponse,setGeminiResponse]=useState("");
+function HomePage() {
+  const [formData, setFormData] = useState({
+    companyname: "",
+    applyingasa: "Fresher",
+    coverLetterTone: "Formal",
+    jobDescription: "",
+    currentResume: "",
+  });
+
+  const [geminiResponse, setGeminiResponse] = useState("");
 
   const formatInlineText = (text) => {
     return text.split(/(\*\*[^*]+\*\*)/g).map((part, idx) => {
@@ -106,73 +106,40 @@ function HomePage(){
     flushList();
     return items;
   };
- async function handleGenerateData(){
-    console.log("FormData:",formData);
-    const prompt=`
-     You are a professional career coach and resume optimization expert. 
-Your task is to generate a personalized cover letter, improve the resume content, 
-and provide an ATS (Applicant Tracking System) analysis.
 
-Inputs:
-Company Name: ${formData.companyname}
-Experience Level: ${formData.applyingasa}  (Fresher / Experienced)
-Job Description: ${formData.jobDescription}
-Current Resume: ${formData.currentResume} (If empty, assume no resume exists and create a draft)
-Preferred Tone: ${formData.coverLetterTone}
+  async function handleGenerateData() {
+    console.log("FormData:", formData);
 
-Output (format clearly in sections):
+    const prompt = `You are a professional career coach and resume optimization expert.\n\nCompany Name: ${formData.companyname}\nExperience Level: ${formData.applyingasa}\nJob Description: ${formData.jobDescription}\nCurrent Resume: ${formData.currentResume}\nPreferred Tone: ${formData.coverLetterTone}\n`;
 
-1. **Tailored Cover Letter**  
-Write a professional cover letter addressed to ${formData.companyname}.  
-Use the specified tone: ${formData.coverLetterTone}.  
-Highlight relevant skills and experiences based on the job description.  
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8080/generate";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ formData, prompt }),
+    };
 
-2. Updated Resume Content  
-Suggest optimized resume summary, bullet points, and skills tailored to ${formData.jobDescription}.  
-Ensure the content is concise, achievement-focused, and ATS-friendly.  
-
-3. Keyword Match Analysis  
-Extract the most important keywords from the job description.  
-Check if they exist in the provided resume (if given).  
-List missing keywords that should be added.  
-
-4. **ATS Score Estimate (0–100) ** 
-Provide a rough ATS match score for the current resume against the job description.  
-Explain the reasoning briefly (e.g., missing keywords, formatting issues, irrelevant content). 
-
-
-Ensure the response is structured, clear, and easy to display in a React app.`; 
-    const url = "https://airesumebuilder-production-7fff.up.railway.app/generate";
-const options = {
-  method: "POST",
-  headers: {
-    'content-type': 'application/json',
-    
-  },
-  body: JSON.stringify({ formData })
-};
-try {
-    const response = await fetch(`https://airesumebuilder-production-7fff.up.railway.app/generate`, t);
-    
-    // Check if the HTTP status is in the 200-299 range
-    if (!response.ok) {
+    try {
+      const response = await fetch(apiUrl, options);
+      if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Generated Gemini Data:", data);
+
+      const text =
+        data?.candidates?.[0]?.content?.parts?.[0]?.text ?? data?.text ?? data?.output ?? "";
+
+      setGeminiResponse(text || "");
+    } catch (err) {
+      console.error("Fetch failed or parsing error:", err);
+      setGeminiResponse("Error generating response. Check console for details.");
     }
+  }
 
-    const e = await response.json();
-    console.log(`Generated Gemini Data:`, e);
-    
-    const text = e.candidates[0]?.content?.parts[0]?.text;
-    if (text) {
-        r(text);
-    }
-} catch (e) {
-    console.error("Fetch failed or parsing error:", e);
-}
-
-
-//AIzaSyDLJtoP_J0KMdrRnYbiuPiBcsvHjMLXrKo
-    return (
+  return (
     <>
       <main className="page-container">
         <header className="page-hero">
@@ -207,23 +174,23 @@ try {
 
               <div className="form-row">
                 <div className="field-group">
-                  <label htmlFor="Applying as a">Applying as</label>
+                  <label htmlFor="applyingasa">Applying as</label>
                   <select
-                    id="Applying as a"
+                    id="applyingasa"
                     value={formData.applyingasa}
-                    onChange={(e)=>setFormData({...formData,applyingasa:e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, applyingasa: e.target.value })}
                   >
-                    <option value="FRESHER">FRESHER</option>
-                    <option value="EXPERNCED">EXPERIENCED</option>
+                    <option value="Fresher">Fresher</option>
+                    <option value="Experienced">Experienced</option>
                   </select>
                 </div>
 
                 <div className="field-group">
-                  <label htmlFor="cover letter tone">Cover letter tone</label>
+                  <label htmlFor="coverLetterTone">Cover letter tone</label>
                   <select
-                    id="cover letter tone"
+                    id="coverLetterTone"
                     value={formData.coverLetterTone}
-                    onChange={(e)=>setFormData({...formData,coverLetterTone:e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, coverLetterTone: e.target.value })}
                   >
                     <option value="Formal">Formal</option>
                     <option value="Informal">Informal</option>
@@ -233,26 +200,26 @@ try {
               </div>
 
               <div className="field-group">
-                <label htmlFor="job description">Job description</label>
+                <label htmlFor="jobDescription">Job description</label>
                 <textarea
-                  name="job description"
-                  id="job description"
+                  name="jobDescription"
+                  id="jobDescription"
                   rows="6"
                   placeholder="Paste the job posting or description here"
                   value={formData.jobDescription}
-                  onChange={(e)=>setFormData({...formData,jobDescription:e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, jobDescription: e.target.value })}
                 ></textarea>
               </div>
 
               <div className="field-group">
-                <label htmlFor="Currentresume">Current resume</label>
+                <label htmlFor="currentResume">Current resume</label>
                 <textarea
-                  name="Currentresume"
-                  id="Currentresume"
+                  name="currentResume"
+                  id="currentResume"
                   rows="6"
                   placeholder="Paste your current resume or leave blank for a draft"
                   value={formData.currentResume}
-                  onChange={(e)=>setFormData({...formData,currentResume:e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, currentResume: e.target.value })}
                 ></textarea>
               </div>
 
@@ -276,4 +243,5 @@ try {
     </>
   );
 }
+
 export default HomePage;
