@@ -41,12 +41,18 @@ Current Resume: ${formData.currentResume}
               
             },
             body: JSON.stringify({
-              prompt: {
-                text: prompt,
-              },
-            }),
-          }
+  contents: [
+    {
+      parts: [
+        {
+          text: prompt
+        }
+      ]
+    }
+  ]
+}),}
         );
+         
 
         if (!response.ok) {
           const errorBody = await response.text();
