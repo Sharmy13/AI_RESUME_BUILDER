@@ -274,7 +274,7 @@ Import repository into Vercel
 Add environment variable:
 
 ```env
-VITE_API_URL=https://your-backend.onrender.com
+VITE_API_URL=https://frontend-vercel.com
 ```
 
 ## Step 4
