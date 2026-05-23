@@ -4,8 +4,6 @@ An AI-powered Resume Builder and Cover Letter Generator built using React, Vite,
 
 This project helps users create professional resumes and generate AI-based cover letters instantly using Gemini AI.
 
----
-
 # 📌 Table of Contents
 
 - Introduction
